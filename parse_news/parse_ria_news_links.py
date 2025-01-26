@@ -21,8 +21,8 @@ import traceback
 import time
 import pytz
 
-os.environ['AWS_ACCESS_KEY_ID'] = <access_key_id> 
-os.environ['AWS_SECRET_ACCESS_KEY'] = <secret_access_key>
+# os.environ['AWS_ACCESS_KEY_ID'] = <access_key_id> 
+# os.environ['AWS_SECRET_ACCESS_KEY'] = <secret_access_key>
 
 
 BUCKET = 'russian-news'
@@ -87,7 +87,7 @@ def fetch_ria_news(start_date = datetime.strptime('2001-10-16', '%Y-%m-%d').date
                         else:
                             print(f'Плохие ссылки {last_href}')
             elif response.status_code == 429:
-                print(f"По {url} получили {response.status_code} ждем секунду")
+                print(f"По {url} получили {response.status_code} ждем 10 секунд")
                 time.sleep(wait_time)
                 continue
             else:
@@ -113,4 +113,5 @@ def fetch_ria_news(start_date = datetime.strptime('2001-10-16', '%Y-%m-%d').date
             print(f"{error_message}\nКонтекст ошибки:\n{error_context}")
         find_date -= delta
 
-fetch_ria_news(end_date=datetime.strptime('2024-01-06', '%Y-%m-%d').date())
+# получаем с конца, end_date начальная дата, после чего идет на уменьшенее (дальше в прошлое)
+fetch_ria_news(end_date=datetime.strptime('2012-10-31', '%Y-%m-%d').date())
