@@ -17,8 +17,5 @@
 `docker-compose down` с опцией -v будут удалены volums с бд
 
 # Пример работы
-![пример работы docker-compose и сервисов](records/record_rus_stocks.mp4)
-
-<video src='records/record_rus_stocks.mp4' width=540/>
-
-[![Watch the video](records/record_rus_stocks.mp4)](records/record_rus_stocks.mp4)
+Пример работы docker-compose и сервисов можно посмотреть здесь
+https://github.com/AlexTrigolos/forecasting_russian_stock_prices/blob/master/records/record_rus_stocks.mp4
