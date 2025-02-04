@@ -37,6 +37,11 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - ./cron/cron.log:/var/log/cron.log
+  
+  redis:
+    image: redis:7.4.2
+    ports:
+      - "6379:6379"
 
   fastapi:
     build:
@@ -46,6 +51,10 @@ services:
     depends_on:
       - db
       - rabbitmq
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - ./logs:/app/logs
     restart: unless-stopped

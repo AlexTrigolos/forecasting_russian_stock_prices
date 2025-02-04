@@ -5,8 +5,9 @@ from schemas import Item, ItemCreate
 from crud import create_item, get_items
 from database import SessionLocal
 from pika import ConnectionParameters, BlockingConnection, PlainCredentials
-import json
 import time
+import os
+import redis
 
 f = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {name} | {level} | {message}"
 # Настройка логгирования
@@ -25,6 +26,9 @@ connection_params = ConnectionParameters('rabbitmq', 5672, '/', PlainCredentials
 
 app = FastAPI()
 
+redis_host = os.getenv('REDIS_HOST', 'localhost')
+redis_port = int(os.getenv('REDIS_PORT', 6379))
+client = redis.StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -74,6 +78,9 @@ def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
 @app.get("/cron")
 def read_cron_result():
+    value = client.get('rabbit:cron')
+    if value is not None:
+        return { 'messages_redis': value }
     with BlockingConnection(connection_params) as conn:
         with conn.channel() as ch:
             ch.queue_declare(queue='daytime')
@@ -81,4 +88,5 @@ def read_cron_result():
             if body is None:
                 time.sleep(0.5)
                 method_frame, header_frame, body = ch.basic_get(queue='daytime')
-    return { 'messages': body }
+            client.set('rabbit:cron', body, ex=10)
+    return { 'messages_rabbit': body }
