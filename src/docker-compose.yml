@@ -13,6 +13,31 @@ services:
     ports:
       - "5432:5432"
 
+  rabbitmq:
+    image: rabbitmq:4.0.5-management
+    hostname: rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  
+  cron:
+    build:
+      context: ./cron
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - ./cron/cron.log:/var/log/cron.log
+
   fastapi:
     build:
       context: ./fastapi
@@ -20,6 +45,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - rabbitmq
     volumes:
       - ./logs:/app/logs
     restart: unless-stopped

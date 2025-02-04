@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from schemas import Item, ItemCreate
 from crud import create_item, get_items
 from database import SessionLocal
+from pika import ConnectionParameters, BlockingConnection, PlainCredentials
+import json
+import time
 
 f = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {name} | {level} | {message}"
 # Настройка логгирования
@@ -17,6 +20,8 @@ logger.add(
     backtrace=True,
     diagnose=True
 )
+
+connection_params = ConnectionParameters('rabbitmq', 5672, '/', PlainCredentials('guest', 'guest'))
 
 app = FastAPI()
 
@@ -65,3 +70,15 @@ def create_items(item: ItemCreate, db: Session = Depends(get_db)):
 def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     items = get_items(db, skip=skip, limit=limit)
     return items
+
+
+@app.get("/cron")
+def read_cron_result():
+    with BlockingConnection(connection_params) as conn:
+        with conn.channel() as ch:
+            ch.queue_declare(queue='daytime')
+            method_frame, header_frame, body = ch.basic_get(queue='daytime')
+            if body is None:
+                time.sleep(0.5)
+                method_frame, header_frame, body = ch.basic_get(queue='daytime')
+    return { 'messages': body }

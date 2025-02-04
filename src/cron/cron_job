@@ -1,0 +1,1 @@
+* * * * * root /usr/src/app/venv/bin/python /usr/src/app/daytime.py >> /var/log/cron.log 2>&1
