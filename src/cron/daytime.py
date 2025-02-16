@@ -2,6 +2,10 @@ from loguru import logger
 from pika import ConnectionParameters, BlockingConnection, PlainCredentials
 from datetime import datetime
 import pytz
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 f = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {name} | {level} | {message}"
 # Настройка логгирования
@@ -15,7 +19,7 @@ logger.add(
     backtrace=True,
     diagnose=True
 )
-connection_params = ConnectionParameters('rabbitmq', 5672, '/', PlainCredentials('guest', 'guest'))
+connection_params = ConnectionParameters('rabbitmq', 5672, '/', PlainCredentials(os.getenv("RABBITMQ_DEFAULT_USER"), os.getenv("RABBITMQ_DEFAULT_PASS")))
 
 
 def cron_daytime():

@@ -2,14 +2,20 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import requests
+import os
+from dotenv import load_dotenv
 
-response = requests.get("https://russian-stocks.ru/")
+load_dotenv()
+
+verify = False if os.getenv("VERIFY") == 'False' else True
+
+response = requests.get(f'{os.getenv("HOST")}/', verify=verify)
 if response.status_code == 200:
     st.write(response.json())
 else:
     st.error("Ошибка при получении данных")
 
-response = requests.get("https://russian-stocks.ru/items/")
+response = requests.get(f'{os.getenv("HOST")}/items/', verify=verify)
 if response.status_code == 200:
     st.write(response.json())
 else:

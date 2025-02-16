@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     build:
@@ -10,6 +8,8 @@ services:
     depends_on:
       - fastapi
       - streamlit
+    networks:
+      - default
 
   db:
     image: postgres:17
@@ -22,6 +22,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - default
 
   rabbitmq:
     image: rabbitmq:4.0.5-management
@@ -29,13 +31,15 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
-    env_file:
-      - .dev.env
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 5s
       timeout: 5s
       retries: 10
+    env_file:
+      - .dev.env
+    networks:
+      - default
   
   cron:
     build:
@@ -44,18 +48,19 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
     env_file:
       - .dev.env
     volumes:
       - ./cron/cron.log:/var/log/cron.log
+    networks:
+      - default
   
   redis:
     image: redis:7.4.2
     ports:
       - "6379:6379"
+    networks:
+      - default
 
   fastapi:
     build:
@@ -71,10 +76,12 @@ services:
       - DEBUG=False
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    volumes:
-      - ./logs:/app/logs
     env_file:
       - .dev.env
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - default
     restart: unless-stopped
 
   streamlit:
@@ -84,12 +91,16 @@ services:
       - "8501:8501"
     env_file:
       - .dev.env
+    networks:
+      - default
 
   tg_bot:
     build:
       context: ./tg_bot
     env_file:
       - .dev.env
+    networks:
+      - default
 
 volumes:
   postgres_data:

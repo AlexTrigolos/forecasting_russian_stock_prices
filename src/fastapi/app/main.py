@@ -11,6 +11,9 @@ import time
 import os
 import redis
 import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
 
 f = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {name} | {level} | {message}"
 # Настройка логгирования
@@ -25,7 +28,7 @@ logger.add(
     diagnose=True
 )
 
-connection_params = ConnectionParameters('rabbitmq', 5672, '/', PlainCredentials('guest', 'guest'))
+connection_params = ConnectionParameters('rabbitmq', 5672, '/', PlainCredentials(os.getenv("RABBITMQ_DEFAULT_USER"), os.getenv("RABBITMQ_DEFAULT_PASS")))
 
 app = FastAPI()
 
@@ -37,7 +40,7 @@ client = redis.StrictRedis(host=redis_host, port=redis_port, decode_responses=Tr
 async def log_requests(request: Request, call_next):
     request_url = request.url.path
     if request.headers.get("X-Forwarded-For", None) is None:
-        return RedirectResponse(url=f'http://nginx{request_url}', status_code=308)
+        return RedirectResponse(url=f'https://nginx{request_url}', status_code=308)
 
     client_ip = request.client.host
     request_method = request.method

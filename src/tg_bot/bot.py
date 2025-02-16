@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 
+verify = False if os.getenv("VERIFY") == 'False' else True
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('start')
     await update.message.reply_text('Привет, я ваш телеграм-бот!')
@@ -71,7 +73,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_root(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('send_root')
-    response = requests.get('https://russian-stocks.ru/items/')
+    response = requests.get(f'{os.getenv("HOST")}/items/', verify=verify)
 
     # Проверка ответа
     if response.status_code == 200:
@@ -85,7 +87,7 @@ async def send_root(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('send_post')
     json = {'name': 'name', 'description': 'description'}
-    response = requests.post('https://russian-stocks.ru/items/',  json=json)
+    response = requests.post(f'{os.getenv("HOST")}/items/', json=json, verify=verify)
 
     # Проверка ответа
     if response.status_code == 200:
