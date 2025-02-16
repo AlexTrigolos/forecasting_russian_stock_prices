@@ -3,13 +3,13 @@ import pandas as pd
 import numpy as np
 import requests
 
-response = requests.get("http://fastapi:8000/")
+response = requests.get("https://russian-stocks.ru/")
 if response.status_code == 200:
     st.write(response.json())
 else:
     st.error("Ошибка при получении данных")
 
-response = requests.get("http://fastapi:8000/items/")
+response = requests.get("https://russian-stocks.ru/items/")
 if response.status_code == 200:
     st.write(response.json())
 else:

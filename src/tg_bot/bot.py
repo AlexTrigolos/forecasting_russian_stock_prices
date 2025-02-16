@@ -71,7 +71,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_root(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('send_root')
-    response = requests.get('http://fastapi:8000/items/')
+    response = requests.get('https://russian-stocks.ru/items/')
 
     # Проверка ответа
     if response.status_code == 200:
@@ -85,7 +85,7 @@ async def send_root(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('send_post')
     json = {'name': 'name', 'description': 'description'}
-    response = requests.post('http://fastapi:8000/items/',  json=json)
+    response = requests.post('https://russian-stocks.ru/items/',  json=json)
 
     # Проверка ответа
     if response.status_code == 200:

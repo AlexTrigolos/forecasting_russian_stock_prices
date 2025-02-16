@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - fastapi
+      - streamlit
+
   db:
     image: postgres:17
     restart: always
@@ -53,6 +63,8 @@ services:
       - rabbitmq
       - redis
     environment:
+      - ENV=production
+      - DEBUG=False
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     volumes:
@@ -71,3 +83,9 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
