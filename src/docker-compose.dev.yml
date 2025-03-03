@@ -40,7 +40,7 @@ services:
       - .dev.env
     networks:
       - default
-  
+
   cron:
     build:
       context: ./cron
@@ -54,7 +54,7 @@ services:
       - ./cron/cron.log:/var/log/cron.log
     networks:
       - default
-  
+
   redis:
     image: redis:7.4.2
     ports:
