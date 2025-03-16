@@ -11,10 +11,10 @@ COPY ./nginx.conf ./nginx.conf
 COPY ./static /var/www/html/static
 
 # Копируем SSL-сертификаты
-COPY ./certificates/certificate_russian_stocks.crt /etc/ssl/certs/certificate_russian_stocks.crt
-COPY ./certificates/certificate.key /etc/ssl/private/certificate.key
-# COPY ./certificates/nginx-selfsigned.crt /etc/ssl/certs/certificate_russian_stocks.crt
-# COPY ./certificates/nginx-selfsigned.key /etc/ssl/private/certificate.key
+# COPY ./certificates/certificate_russian_stocks.crt /etc/ssl/certs/certificate_russian_stocks.crt
+# COPY ./certificates/certificate.key /etc/ssl/private/certificate.key
+COPY ./certificates/nginx-selfsigned.crt /etc/ssl/certs/certificate_russian_stocks.crt
+COPY ./certificates/nginx-selfsigned.key /etc/ssl/private/certificate.key
 
 RUN chmod 0600 /etc/ssl/private/certificate.key
 

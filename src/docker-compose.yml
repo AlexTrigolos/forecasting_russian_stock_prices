@@ -29,6 +29,8 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+    env_file:
+      - .dev.env
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 5s
@@ -45,6 +47,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    env_file:
+      - .dev.env
     volumes:
       - ./cron/cron.log:/var/log/cron.log
   
@@ -69,6 +73,8 @@ services:
       - REDIS_PORT=6379
     volumes:
       - ./logs:/app/logs
+    env_file:
+      - .dev.env
     restart: unless-stopped
 
   streamlit:
@@ -76,10 +82,14 @@ services:
       context: ./streamlit
     ports:
       - "8501:8501"
+    env_file:
+      - .dev.env
 
   tg_bot:
     build:
       context: ./tg_bot
+    env_file:
+      - .dev.env
 
 volumes:
   postgres_data:
