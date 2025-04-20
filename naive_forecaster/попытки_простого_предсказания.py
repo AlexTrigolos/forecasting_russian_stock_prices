@@ -1471,13 +1471,98 @@ for secid in secids:
     # # Показать график
     # plt.show()
 
+secid = 'AFKS'
+model_name = 'random_forest'
 def download_models_data_from_s3(secid, model_name):
     key = f'predictions/{secid}/{model_name}.pkl'
     response = s3_client.get_object(Bucket=BUCKET, Key=key)
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-        print(f"Успешно сохранен в {BUCKET}/{key}")
-        print(pickle.loads(response['Body'].read()))
+        print(f"Успешное получение в {BUCKET}/{key}")
+        return pickle.loads(response['Body'].read())
     else:
-        print(f"Ошибка при сохранении: {response['ResponseMetadata']['HTTPStatusCode']}")
+        print(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
 
-download_models_data_from_s3('ABIO', 'random_forest')
+fitted_model = download_models_data_from_s3(secid, model_name)
+fitted_model
+
+def download_data_frame_from_s3(secid):
+    key = f'preprocessed_data/secids/{secid}/{secid}_data_frame.pkl'
+    response = s3_client.get_object(Bucket=BUCKET, Key=key)
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        print(f"Успешное получение в {BUCKET}/{key}")
+        return pickle.loads(response['Body'].read())
+    else:
+        print(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
+
+data_frame = download_data_frame_from_s3(secid)
+data_frame['CLOSE'][int(len(data_frame) * 0.8):]
+
+from io import BytesIO
+
+plt.figure(figsize=(10, 6))
+
+train = data_frame.iloc[:len(data_frame) - len(fitted_model['predictions'])]
+val = data_frame.iloc[len(data_frame) - len(fitted_model['predictions']):]
+# Тренировочные данные
+plt.plot(pd.to_datetime(train['TRADEDATE']), train['CLOSE'], ':', color='blue', label='Тренировочные данные')
+
+# Валидационные данные
+plt.plot(pd.to_datetime(val['TRADEDATE']), val['CLOSE'], ':', color='orange', label='Валидационные данные')
+
+# Предсказания
+plt.plot(pd.to_datetime(val['TRADEDATE']), fitted_model['predictions'], ':', color='red', label='Предсказания')
+
+# Настройка графика
+plt.title('График тренировочных и валидационных данных с предсказаниями')
+plt.xlabel('День')
+plt.ylabel('Стоимость')
+plt.legend()
+plt.grid(True)
+
+# Показать график
+
+img_buffer = BytesIO()
+plt.savefig(img_buffer, format='png')
+img_buffer.seek(0)
+plt.close()
+s3_client.put_object(Bucket=BUCKET, Key= f'predictions/{secid}/images/{model_name}_image.png', Body=img_buffer)
+
+plt.figure(figsize=(10, 6))
+
+val = data_frame.iloc[len(data_frame) - len(fitted_model['predictions']):]
+# Валидационные данные
+plt.plot(pd.to_datetime(val['TRADEDATE']), val['CLOSE'], ':', color='orange', label='Валидационные данные')
+
+# Предсказания
+plt.plot(pd.to_datetime(val['TRADEDATE']), fitted_model['predictions'], ':', color='red', label='Предсказания')
+
+# Настройка графика
+plt.title('График тренировочных и валидационных данных с предсказаниями')
+plt.xlabel('День')
+plt.ylabel('Стоимость')
+plt.legend()
+plt.grid(True)
+
+# Показать график
+plt.show()
+
+plt.figure(figsize=(10, 6))
+
+train_count = len(data_frame) - len(fitted_model['predictions'])
+val = data_frame.iloc[train_count:(train_count + min(len(fitted_model['predictions']), 40))]
+# Валидационные данные
+plt.plot(pd.to_datetime(val['TRADEDATE']), val['CLOSE'], ':', color='orange', label='Валидационные данные')
+
+# Предсказания
+plt.plot(pd.to_datetime(val['TRADEDATE']), fitted_model['predictions'][:min(len(fitted_model['predictions']), 40)], ':', color='red', label='Предсказания')
+
+# Настройка графика
+plt.title('График тренировочных и валидационных данных с предсказаниями')
+plt.xlabel('День')
+plt.xticks(rotation=25)
+plt.ylabel('Стоимость')
+plt.legend()
+plt.grid(True)
+
+# Показать график
+plt.show()
