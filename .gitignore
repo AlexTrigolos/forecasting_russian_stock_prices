@@ -163,5 +163,5 @@ cython_debug/
 
 src/nginx/certificates/*
 !src/nginx/certificates/nginx-selfsigned.*
-*.log
-*.log.zip
+src/.prod.env
+src/logs/
