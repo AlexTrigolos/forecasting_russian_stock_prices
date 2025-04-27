@@ -1,0 +1,100 @@
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - fastapi
+      - streamlit
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - .prod.env
+
+  rabbitmq:
+    image: rabbitmq:4.0.5-management
+    hostname: rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  
+  cron:
+    build:
+      context: ./cron
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./cron/cron.log:/var/log/cron.log
+  
+  redis:
+    image: redis:7.4.2
+    ports:
+      - "6379:6379"
+
+  fastapi:
+    build:
+      context: ./fastapi
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+    environment:
+      - ENV=production
+      - DEBUG=False
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    env_file:
+      - .prod.env
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  streamlit:
+    build:
+      context: ./streamlit
+    ports:
+      - "8501:8501"
+    env_file:
+      - .prod.env
+
+  tg_bot:
+    build:
+      context: ./tg_bot
+    env_file:
+      - .prod.env
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
