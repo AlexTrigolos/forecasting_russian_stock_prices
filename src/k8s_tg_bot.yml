@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tg-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tg-bot
+  template:
+    metadata:
+      labels:
+        app: tg-bot
+    spec:
+      containers:
+      - name: tg-bot
+        image: alextrigolosvlg/russian_news_tg_bot:v1
+        env:
+        - name: VERIFY
+          value: "False"
+        - name: HOST
+          value: "https://nginx"
+        - name: BOT_TOKEN
+          value: "6867927521:AAGgv7u6ZpJZbAbaysSDgVVsGs5Q-kJ3FJ8"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tg-bot
+spec:
+  selector:
+    app: tg-bot
+  ports:
+    - port: 8080
+      targetPort: 8080

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cron
+  template:
+    metadata:
+      labels:
+        app: cron
+    spec:
+      containers:
+      - name: cron
+        image: alextrigolosvlg/russian_news_cron:v1
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "guest"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "guest"
+        volumeMounts:
+        - name: cron-log
+          mountPath: /var/log
+        command: ["/usr/src/app/entrypoint.sh"]
+      volumes:
+      - name: cron-log
+        persistentVolumeClaim:
+          claimName: cron-log-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cron
+spec:
+  selector:
+    app: cron
+  ports:
+    - port: 80
+      targetPort: 8080
