@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - name: fastapi
+        image: alextrigolosvlg/russian_news_fastapi:v1
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENV
+          value: "production"
+        - name: DEBUG
+          value: "False"
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: POSTGRES_DB
+          value: "new_db"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: fastapi

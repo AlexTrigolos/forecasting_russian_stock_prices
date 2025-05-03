@@ -1,7 +1,7 @@
 # tg_bot/Dockerfile
 FROM python:3.9
 
-WORKDIR .
+WORKDIR /app
 
 RUN pip install --upgrade pip
 

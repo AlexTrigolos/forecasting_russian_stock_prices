@@ -7,10 +7,16 @@ from schemas import Item, ItemCreate
 from crud import create_item, get_items
 from database import SessionLocal
 from pika import ConnectionParameters, BlockingConnection, PlainCredentials
+from botocore.exceptions import ClientError, NoCredentialsError
+from fastapi.responses import FileResponse
 import time
 import os
 import redis
 import asyncio
+import boto3
+import pickle
+import json
+import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -67,6 +73,113 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+BUCKET = 'russian-stocks-quotes'
+
+access_key = os.getenv('AWS_ACCESS_KEY_ID')
+secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+endpoint_url = 'https://storage.yandexcloud.net'
+
+# Создание клиента S3
+s3_client = boto3.client('s3',
+                         region_name='ru-central1',
+                         aws_access_key_id=access_key,
+                         aws_secret_access_key=secret_key,
+                         endpoint_url=endpoint_url)
+
+
+def download_models_data_from_s3(secid, model_name):
+    key = f'predictions/{secid}/{model_name}.pkl'
+    response = s3_client.get_object(Bucket=BUCKET, Key=key)
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        logger.info(f"Успешное получение в {BUCKET}/{key}")
+        return pickle.loads(response['Body'].read())
+    else:
+        logger.info(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
+
+
+GROUPED_IMAGES = {
+    'Весь график': {'': 'cost'},
+    'Валидация и предсказания': { 'неделя': 'val_cost_week', 'месяц': 'val_cost_month', 'год': 'val_cost_year', 'максимум': 'val_cost_maximum'},
+    'RMSE ошибка': { 'неделя': 'MAPE_errors_week', 'месяц': 'MAPE_errors_month', 'год': 'MAPE_errors_year', 'максимум': 'MAPE_errors_maximum'},
+    'MAPE ошибка': { 'неделя': 'RMSE_errors_week', 'месяц': 'RMSE_errors_month', 'год': 'RMSE_errors_year', 'максимум': 'RMSE_errors_maximum'}
+}
+def get_images(secid, model):
+    grouped_images = dict()
+    for category, images in GROUPED_IMAGES.items():
+        if category not in grouped_images:
+            grouped_images[category] = dict()
+        for name, image in images.items():
+            grouped_images[category][name] = f'predictions/{secid}/images/{model}_{image}.png'
+    return grouped_images
+
+
+def list_directories(s3_client):
+    directories = set()
+    try:
+        paginator = s3_client.get_paginator('list_objects_v2')
+        for page in paginator.paginate(Bucket=f'{BUCKET}', Delimiter='/', Prefix='predictions/'):
+            for prefix in page.get('CommonPrefixes', []):
+                dir = prefix.get('Prefix').split('/')[-2]
+                directories.add(dir)
+    except NoCredentialsError:
+        print("Ошибка: Неверные учетные данные.")
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
+    return sorted(directories)
+
+SECIDS = list_directories(s3_client)
+SECIDS.remove('images')
+MODELS = ['ridge', 'random_forest', 'news', 'ridge_and_news', 'random_forest_and_new']
+
+@app.get("/secids/")
+async def read_secids():
+    return SECIDS
+
+
+@app.get("/predict/{model}/{secid}/")
+async def predict(model: str, secid: str):
+    """
+    Получение обучаемых данных, предиктов и реальных значений
+    """
+    # if model not in MODELS:
+    #     raise HTTPException(status_code=400, detail="Invalid model")
+    
+    # if secid not in SECIDS:
+    #     raise HTTPException(status_code=400, detail="Invalid secid")
+    
+
+    data = download_models_data_from_s3(secid, model)
+    predictions = data['predictions']
+    rmse = [metric['rmse'] for metric in data['metric_scores']]
+    mape = [metric['mape'] for metric in data['metric_scores']]
+    data_frame = pd.DataFrame({ 'День': list(range(1, len(predictions) + 1)), 'Прогноз': predictions, 'RMSE': rmse, 'MAPE': mape })
+    data_frame.set_index('День', inplace=True)
+    grouped_images = get_images(secid, model)
+    return {
+        "data_frame": data_frame,
+        "grouped_images": grouped_images
+    }
+
+
+# @app.post("/stats/{model}/{symbol}")
+# async def stats(model: str, symbol: str):
+#     """
+#     Возвращает статистику и графику
+#     """
+#     if model not in ["ModelA", "ModelB"]:
+#         raise HTTPException(status_code=400, detail="Invalid model")
+    
+#     if symbol not in SYMBOLS:
+#         raise HTTPException(status_code=400, detail="Invalid symbol")
+    
+#     # Здесь симулируем возврат изображений
+#     images = [
+#         "https://via.placeholder.com/300x200.png",
+#         "https://via.placeholder.com/300x200.png"
+#     ]
+#     return {"images": images, "best_model": "Best Stats"}
 
 
 @app.get("/")
