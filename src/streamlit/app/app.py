@@ -101,7 +101,7 @@ def display_prediction(model, secid):
 
 st.sidebar.header("Выбор данных")
 secids = fetch_secids()  # получаем доступные модели
-models = ['ridge', 'random_forest', 'news', 'ridge_and_news', 'random_forest_and_new']
+models = ['ridge', 'random_forest', 'xgboost', 'ridge_with_news', 'random_forest_with_new', 'xgboost_with_news']
 selected_secid = st.sidebar.selectbox("Акция:", options=secids)
 selected_model = st.sidebar.selectbox("Модель:", options=models)
 
