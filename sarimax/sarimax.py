@@ -67,7 +67,7 @@ def download_secid_names(dir):
     key = f'{dir}secid_names.pkl'
     return json.loads(download_object_from_s3(key))
 
-def download_data_from_s3(dir, secids=None):
+def fit_secids_from_s3(dir, secids=None):
     data = {}
     try:
         directories = download_secid_names(dir)
@@ -75,8 +75,7 @@ def download_data_from_s3(dir, secids=None):
             if (secids is None or secid in secids):
                 if secids is not None:
                     secids.remove(secid)
-                data[secid] = download_info_from_s3(dir, secid)
-                data[secid]['data_frame'] = download_data_frame_from_s3(dir, secid)
+                fit_secid(secid, download_data_frame_from_s3(dir, secid))
     except Exception as e:
         error_message = f"Неизвестная ошибка: {str(e)}"
         error_context = traceback.format_exc()
@@ -101,8 +100,6 @@ def metrics(y_true, y_pred):
     metric_scores.append({ 'rmse': rmse_score, 'mape': mape_score })
   return metric_scores
 
-data_frames = download_data_from_s3('preprocessed_data/')
-
 
 lags = { 1: 'lag_1', 2: 'lag_2', 3: 'lag_3', 4: 'lag_4', 5: 'lag_week', 10: 'lag_2_weeks',
         21: 'lag_month', 62: 'lag_3_months', 124: 'lag_half_year', 247: 'lag_year',
@@ -125,7 +122,6 @@ def upload_models_data_to_s3(secid, model_name, body):
     else:
         print(f"Ошибка при сохранении: {response['ResponseMetadata']['HTTPStatusCode']}")
 
-secids = download_secid_names('preprocessed_data/')
 
 
 def search_optimal_sarima(time_series, secid):
@@ -163,9 +159,9 @@ def search_optimal_sarima(time_series, secid):
   return best_model_results, { 'p': optimal_order_param[0], 'd': optimal_order_param[1], 'q': optimal_order_param[2],  'P': optimal_seasonal_param[0], 'D': optimal_seasonal_param[1], 'Q': optimal_seasonal_param[2], 'm': optimal_seasonal_param[3] }
 
 
-for secid in secids:
+def fit_secid(secid, data_frame):
   # Получаем данные по бумаге и удаляем дату
-  secid_data = data_frames[secid]['data_frame'][['TRADEDATE', 'CLOSE']]
+  secid_data = data_frame[['TRADEDATE', 'CLOSE']]
   subset = pd.to_datetime(secid_data['TRADEDATE'])
   secid_data = secid_data.drop('TRADEDATE', axis=1)
 
@@ -193,6 +189,8 @@ for secid in secids:
         secid_data = temp
         break
   secid_data = secid_data.reset_index().drop('index', axis=1)
+  if secid_data.shape[0] < 6:
+    return
 
   # Разбиваем данные, в валидацию идет 20%
   train_size = int(len(secid_data) * 0.8)
@@ -234,3 +232,5 @@ for secid in secids:
     data['best_params'] = best_params
     data['best_model'] = 'SARIMAX'
     upload_models_data_to_s3(secid, data['name'], data)
+
+fit_secids_from_s3('preprocessed_data/')

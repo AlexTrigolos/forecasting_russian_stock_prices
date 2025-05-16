@@ -5,6 +5,7 @@ import traceback
 import io
 import json
 import pickle
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -30,6 +31,8 @@ s3_client = boto3.client('s3',
                          aws_secret_access_key=secret_key,
                          endpoint_url=endpoint_url)
 
+warnings.filterwarnings("ignore")
+
 def upload_object_to_s3(key, body):
     response = s3_client.put_object(Bucket=BUCKET, Key=key, Body=body)
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
@@ -39,10 +42,9 @@ def upload_object_to_s3(key, body):
 
 def download_models_data_from_s3(secid, model_name):
     key = f'predictions/{secid}/{model_name}.pkl'
-    print(key)
     response = s3_client.get_object(Bucket=BUCKET, Key=key)
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-        print(f"Успешное получение в {BUCKET}/{key}")
+        # print(f"Успешное получение в {BUCKET}/{key}")
         return pickle.loads(response['Body'].read())
     else:
         print(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
@@ -51,7 +53,7 @@ def download_data_frame_from_s3(secid):
     key = f'preprocessed_data/secids/{secid}/{secid}_data_frame.pkl'
     response = s3_client.get_object(Bucket=BUCKET, Key=key)
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-        print(f"Успешное получение в {BUCKET}/{key}")
+        # print(f"Успешное получение в {BUCKET}/{key}")
         return pickle.loads(response['Body'].read())
     else:
         print(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
@@ -201,15 +203,17 @@ def upload_errors_data(data, error_name):
     error_name_file = f'predictions/{error_name}.pkl'
     upload_object_to_s3(error_name_file, json_data)
 
-model_names = ['random_forest', 'ridge']
+model_names = ['ridge', 'random_forest', 'xgboost', 'lstm', 'sarimax', 'ridge_with_news', 'random_forest_with_news', 'xgboost_with_news', 'lstm_with_news']
 best_rmse = list()
 best_mape = list()
 worse_rmse = list()
 worse_mape = list()
 for model_name in model_names:
+  print(model_name)
   rmse_data = list()
   mape_data = list()
   for secid in secids:
+    print(secid, end=', ', flush=True)
     fitted_model = download_models_data_from_s3(secid, model_name)
     data_frame = download_data_frame_from_s3(secid)
     save_graph_cost(data_frame, fitted_model, secid, model_name)
@@ -256,6 +260,7 @@ for model_name in model_names:
       else:
         worse_mape.append({ 'value': mape[indx], 'secid': secid, 'model': model_name })
 
+  print()
   for indx in range(len(rmse_data)):
     rmse_data[indx] /= len(secids)
 

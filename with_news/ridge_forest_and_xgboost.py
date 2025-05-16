@@ -138,13 +138,13 @@ base_models = [
     #     'model': Ridge(),
     #     'grid_params': ridge_grid_params,
     #     'importances_name': 'coef_'
-    # }
-    {
-      'name': 'random_forest_with_news',
-      'model': RandomForestRegressor(),
-      'grid_params': random_forest_grid_params,
-      'importances_name': 'feature_importances_'
-    },
+    # },
+    # {
+    #   'name': 'random_forest_with_news',
+    #   'model': RandomForestRegressor(),
+    #   'grid_params': random_forest_grid_params,
+    #   'importances_name': 'feature_importances_'
+    # },
     {
       'name': 'xgboost_with_news',
       'model': XGBRegressor(),
@@ -301,3 +301,5 @@ def fit_secid(secid, data_frame, news_info):
     upload_models_data_to_s3(secid, data['name'], data)
 
 fit_secids_from_s3('preprocessed_data/')
+
+
