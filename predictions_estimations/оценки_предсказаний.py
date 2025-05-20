@@ -269,6 +269,8 @@ for model_name in model_names:
 
   save_graph_mean_errors(model_name, rmse_data, 'RMSE')
   save_graph_mean_errors(model_name, mape_data, 'MAPE')
+  upload_errors_data(rmse_data, f'{model_name}_mean_rmse')
+  upload_errors_data(mape_data, f'{model_name}_mean_mape')
 
 upload_errors_data(best_rmse, 'best_rmse')
 upload_errors_data(best_mape, 'best_mape')
@@ -278,3 +280,36 @@ save_graph_best_worse([item['value'] for item in best_rmse], 'RMSE', 'best')
 save_graph_best_worse([item['value'] for item in best_mape], 'MAPE', 'best')
 save_graph_best_worse([item['value'] for item in worse_rmse], 'RMSE', 'worse')
 save_graph_best_worse([item['value'] for item in worse_mape], 'MAPE', 'worse')
+
+for model_name in model_names:
+  rmse_data = list()
+  mape_data = list()
+  for secid in ['AFKS', 'AGRO', 'ALRS', 'AMEZ', 'APTK', 'AQUA', 'ARSA', 'BANE', 'BANEP', 'BELU', 'BLNG', 'BRZL', 'BSPB', 'CBOM', 'CHMF', 'CHMK', 'CNTL', 'CNTLP', 'DASB', 'DIOD', 'DSKY', 'DVEC', 'DZRDP', 'EELT', 'ELTZ', 'FEES', 'FESH', 'GAZA', 'GAZP', 'GCHE', 'GMKN', 'GTRK', 'HALS', 'HYDR', 'IRAO', 'IRKT', 'KBTK', 'KMAZ', 'KMEZ', 'KRKNP', 'KROT', 'KROTP', 'KUBE', 'KUZB', 'KZOS', 'KZOSP', 'LIFE', 'LKOH', 'LNZL', 'LNZLP', 'LSNG', 'LSNGP', 'LSRG', 'MAGN', 'MFGSP', 'MGNT', 'MGTSP', 'MOEX', 'MRKC', 'MRKK', 'MRKP', 'MRKS', 'MRKU', 'MRKV', 'MRKY', 'MRKZ', 'MRSB', 'MSNG', 'MSRS', 'MSTT', 'MTLR', 'MTLRP', 'MTSS', 'MVID', 'NKHP', 'NKNC', 'NKNCP', 'NLMK', 'NMTP', 'NVTK', 'OGKB', 'PHOR', 'PIKK', 'PLSM', 'PLZL', 'PMSBP', 'POLY', 'PRTK', 'QIWI', 'RASP', 'RBCM', 'RKKE', 'RNFT', 'ROSB', 'ROSN', 'ROST', 'RSTI', 'RSTIP', 'RTKM', 'RTKMP', 'RUAL', 'RUGR', 'SARE', 'SAREP', 'SBER', 'SBERP', 'SELG', 'SFIN', 'SIBN', 'SLEN', 'SNGS', 'SNGSP', 'STSB', 'STSBP', 'SVAV', 'TATN', 'TATNP', 'TCSG', 'TGKA', 'TGKB', 'TGKBP', 'TGKD', 'TGKDP', 'TGKN', 'TNSE', 'TORSP', 'TRMK', 'TRNFP', 'TTLK', 'UKUZ', 'UNAC', 'UPRO', 'USBN', 'UTAR', 'VLHZ', 'VSMO', 'VZRZP', 'YKEN', 'ZILL']:
+    fitted_model = download_models_data_from_s3(secid, model_name)
+    data_frame = download_data_frame_from_s3(secid)
+    rmse = list()
+    mape = list()
+    for metrics in fitted_model['metric_scores']:
+      rmse.append(metrics['rmse'])
+      mape.append(metrics['mape'])
+    for indx in range(len(rmse)):
+      if len(rmse_data) > indx:
+        rmse_data[indx] += rmse[indx]
+      else:
+        rmse_data.append(rmse[indx])
+
+      if len(mape_data) > indx:
+        mape_data[indx] += mape[indx]
+      else:
+        mape_data.append(mape[indx])
+
+  for indx in range(len(rmse_data)):
+    rmse_data[indx] /= len(secids)
+
+  for indx in range(len(mape_data)):
+    mape_data[indx] /= len(secids)
+
+  save_graph_mean_errors(f'five_years_{model_name}', rmse_data, 'RMSE')
+  save_graph_mean_errors(f'five_years_{model_name}', mape_data, 'MAPE')
+  upload_errors_data(rmse_data, f'five_years_{model_name}_mean_rmse')
+  upload_errors_data(mape_data, f'five_years_{model_name}_mean_mape')

@@ -14,3 +14,6 @@ asyncio==3.4.3
 boto3==1.37.38
 scikit-learn==1.6.1
 pandas==2.2.3
+keras==3.9.2
+tensorflow==2.19.0
+xgboost==3.0.1

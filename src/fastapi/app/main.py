@@ -18,6 +18,7 @@ import pickle
 import json
 import pandas as pd
 from dotenv import load_dotenv
+import numpy as np
 
 load_dotenv()
 
@@ -99,12 +100,35 @@ def download_models_data_from_s3(secid, model_name):
         logger.info(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
 
 
+def download_mean_models_data_from_s3(model_name, duration):
+    mape = None
+    rmse = None
+    key = f'predictions/{duration}{model_name}_mean_mape.pkl'
+    response = s3_client.get_object(Bucket=BUCKET, Key=key)
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        logger.info(f"Успешное получение в {BUCKET}/{key}")
+        mape = json.loads(response['Body'].read())
+    else:
+        logger.info(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
+
+    key = f'predictions/{duration}{model_name}_mean_rmse.pkl'
+    response = s3_client.get_object(Bucket=BUCKET, Key=key)
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        logger.info(f"Успешное получение в {BUCKET}/{key}")
+        rmse = json.loads(response['Body'].read())
+    else:
+        logger.info(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
+
+    return mape, rmse
+
+
 GROUPED_IMAGES = {
     'Весь график': {'': 'cost'},
     'Валидация и предсказания': { 'неделя': 'val_cost_week', 'месяц': 'val_cost_month', 'год': 'val_cost_year', 'максимум': 'val_cost_maximum'},
-    'RMSE ошибка': { 'неделя': 'MAPE_errors_week', 'месяц': 'MAPE_errors_month', 'год': 'MAPE_errors_year', 'максимум': 'MAPE_errors_maximum'},
-    'MAPE ошибка': { 'неделя': 'RMSE_errors_week', 'месяц': 'RMSE_errors_month', 'год': 'RMSE_errors_year', 'максимум': 'RMSE_errors_maximum'}
+    'MAPE ошибка': { 'неделя': 'MAPE_errors_week', 'месяц': 'MAPE_errors_month', 'год': 'MAPE_errors_year', 'максимум': 'MAPE_errors_maximum'},
+    'RMSE ошибка': { 'неделя': 'RMSE_errors_week', 'месяц': 'RMSE_errors_month', 'год': 'RMSE_errors_year', 'максимум': 'RMSE_errors_maximum'}
 }
+
 def get_images(secid, model):
     grouped_images = dict()
     for category, images in GROUPED_IMAGES.items():
@@ -112,6 +136,21 @@ def get_images(secid, model):
             grouped_images[category] = dict()
         for name, image in images.items():
             grouped_images[category][name] = f'predictions/{secid}/images/{model}_{image}.png'
+    return grouped_images
+
+GROUPED_MEAN_IMAGES = {
+    'MAPE ошибка': { 'неделя': 'MAPE_mean_errors_week', 'месяц': 'MAPE_mean_errors_month', 'год': 'MAPE_mean_errors_year', 'максимум': 'MAPE_mean_errors_maximum'},
+    'RMSE ошибка': { 'неделя': 'RMSE_mean_errors_week', 'месяц': 'RMSE_mean_errors_month', 'год': 'RMSE_mean_errors_year', 'максимум': 'RMSE_mean_errors_maximum'}
+}
+
+def get_mean_images(model, duration):
+    grouped_images = dict()
+    for category, images in GROUPED_MEAN_IMAGES.items():
+        if category not in grouped_images:
+            grouped_images[category] = dict()
+        for name, image in images.items():
+            logger.info(category)
+            grouped_images[category][name] = f'predictions/images/{duration}{model}_{image}.png'
     return grouped_images
 
 
@@ -130,12 +169,19 @@ def list_directories(s3_client):
     return sorted(directories)
 
 SECIDS = list_directories(s3_client)
-SECIDS.remove('images')
-MODELS = ['ridge', 'random_forest', 'news', 'ridge_and_news', 'random_forest_and_new']
+if 'images' in SECIDS:
+    SECIDS.remove('images')
+
+MODELS = ['ridge', 'random_forest', 'xgboost', 'lstm', 'sarimax', 'ridge_with_news', 'random_forest_with_news', 'xgboost_with_news', 'lstm_with_news']
 
 @app.get("/secids/")
 async def read_secids():
     return SECIDS
+
+
+@app.get("/models/")
+async def read_models():
+    return MODELS
 
 
 @app.get("/predict/{model}/{secid}/")
@@ -149,17 +195,39 @@ async def predict(model: str, secid: str):
     # if secid not in SECIDS:
     #     raise HTTPException(status_code=400, detail="Invalid secid")
     
-
     data = download_models_data_from_s3(secid, model)
-    predictions = data['predictions']
+    predictions = np.float64(data['predictions'])
     rmse = [metric['rmse'] for metric in data['metric_scores']]
     mape = [metric['mape'] for metric in data['metric_scores']]
-    data_frame = pd.DataFrame({ 'День': list(range(1, len(predictions) + 1)), 'Прогноз': predictions, 'RMSE': rmse, 'MAPE': mape })
+    data_frame = pd.DataFrame({'День': list(range(1, len(predictions) + 1)), 'Прогноз': predictions, 'RMSE': rmse, 'MAPE': mape })
     data_frame.set_index('День', inplace=True)
     grouped_images = get_images(secid, model)
+    logger.info(grouped_images)
     return {
         "data_frame": data_frame,
         "grouped_images": grouped_images
+    }
+
+
+@app.get("/predict_mean/{model}/{duration}")
+async def predict_mean(model: str, duration: str):
+    """
+    Получение обучаемых данных, предиктов и реальных значений
+    """
+    # if model not in MODELS:
+    #     raise HTTPException(status_code=400, detail="Invalid model")
+    if duration == 'all':
+        duration = ''
+    else:
+        duration = 'five_years_'
+    mape, rmse = download_mean_models_data_from_s3(model, duration)
+    mean_data_frame = pd.DataFrame({'День': list(range(1, len(mape) + 1)), 'RMSE': rmse, 'MAPE': mape })
+    mean_data_frame.set_index('День', inplace=True)
+    grouped_mean_images = get_mean_images(model, duration)
+    logger.info(grouped_mean_images)
+    return {
+        "mean_data_frame": mean_data_frame,
+        "grouped_mean_images": grouped_mean_images
     }
 
 
@@ -182,41 +250,41 @@ async def predict(model: str, secid: str):
 #     return {"images": images, "best_model": "Best Stats"}
 
 
-@app.get("/")
-async def read_root():
-    return {"Hello": "World"}
+# @app.get("/")
+# async def read_root():
+#     return {"Hello": "World"}
 
 
-@app.post("/items/", response_model=Item)
-async def create_items(item: ItemCreate, db: Session = Depends(get_db)):
-    return create_item(db=db, item=item)
+# @app.post("/items/", response_model=Item)
+# async def create_items(item: ItemCreate, db: Session = Depends(get_db)):
+#     return create_item(db=db, item=item)
 
 
-@app.get("/items/", response_model=list[Item])
-async def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    items = get_items(db, skip=skip, limit=limit)
-    return items
+# @app.get("/items/", response_model=list[Item])
+# async def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     items = get_items(db, skip=skip, limit=limit)
+#     return items
 
 
-@app.get("/cron/")
-async def read_cron_result():
-    value = client.get('rabbit:cron')
-    if value is not None:
-        return { 'messages_redis': value }
-    with BlockingConnection(connection_params) as conn:
-        with conn.channel() as ch:
-            ch.queue_declare(queue='daytime')
-            method_frame, header_frame, body = ch.basic_get(queue='daytime')
-            if body is None:
-                await asyncio.sleep(0.5)
-                method_frame, header_frame, body = ch.basic_get(queue='daytime')
-            if body is not None:
-                client.set('rabbit:cron', body, ex=10)
-    return { 'messages_rabbit': body }
+# @app.get("/cron/")
+# async def read_cron_result():
+#     value = client.get('rabbit:cron')
+#     if value is not None:
+#         return { 'messages_redis': value }
+#     with BlockingConnection(connection_params) as conn:
+#         with conn.channel() as ch:
+#             ch.queue_declare(queue='daytime')
+#             method_frame, header_frame, body = ch.basic_get(queue='daytime')
+#             if body is None:
+#                 await asyncio.sleep(0.5)
+#                 method_frame, header_frame, body = ch.basic_get(queue='daytime')
+#             if body is not None:
+#                 client.set('rabbit:cron', body, ex=10)
+#     return { 'messages_rabbit': body }
 
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": f"Ошибка: {exc.detail}"},
-    )
+# @app.exception_handler(HTTPException)
+# async def http_exception_handler(request, exc):
+#     return JSONResponse(
+#         status_code=exc.status_code,
+#         content={"message": f"Ошибка: {exc.detail}"},
+#     )

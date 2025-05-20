@@ -66,6 +66,11 @@ def fetch_secids():
     secids = response.json()
     return secids
 
+def fetch_models():
+    response = requests.get(f'{FAST_API_URL}/models/', verify=verify)
+    models = response.json()
+    return models
+
 def display_prediction(model, secid):
     st.title("Предсказательные данные")
     st.write(f"Выбранная модель: {model}, Ценная бумага: {secid}")
@@ -99,16 +104,51 @@ def display_prediction(model, secid):
         st.error(f"Ошибка: {e}")
 
 
+def display_mean(model, duration):
+    st.title("Предсказательные средние данные")
+    st.write(f"Выбранная модель: {model}, с продолжительностью {duration}")
+    try:
+        resp = requests.get(f'{FAST_API_URL}/predict_mean/{model}/{duration}', verify=verify)
+        result = resp.json()
+        st.dataframe(result['mean_data_frame'], use_container_width=True)
+        for category, images in result['grouped_mean_images'].items():
+            st.subheader(category)
+            index = 0
+            cols = st.columns(2)
+            images_count = len(images)
+            for name, image in images.items():
+                try:
+                    s3_client.download_file(BUCKET, image, '/tmp/image')
+                    if index % 2 == 0 and index + 1 == images_count:
+                        if os.path.exists('/tmp/image'):
+                            if name != '':
+                                st.subheader(name)
+                            st.image('/tmp/image', use_container_width=True)
+                    else:
+                        with cols[index % 2]:
+                            if os.path.exists('/tmp/image'):
+                                if name != '':
+                                    st.subheader(name)
+                                st.image('/tmp/image', use_container_width=True)
+                                index += 1
+                except ClientError as e:
+                    images_count -= 1
+    except Exception as e:
+        st.error(f"Ошибка: {e}")
+
+
 st.sidebar.header("Выбор данных")
-secids = fetch_secids()  # получаем доступные модели
-models = ['ridge', 'random_forest', 'xgboost', 'ridge_with_news', 'random_forest_with_new', 'xgboost_with_news']
-selected_secid = st.sidebar.selectbox("Акция:", options=secids)
-selected_model = st.sidebar.selectbox("Модель:", options=models)
+secids = fetch_secids()
+models = fetch_models()
 
-if selected_secid and selected_model:
-    action = st.sidebar.radio("Действие:", ("Прогноз", "Статистика"))
+action = st.sidebar.radio("Прогноз по:", ("Акция", "Среднее"))
 
-    if action == "Прогноз":
-        display_prediction(selected_model, selected_secid)
-    # elif action == "Статистика":
-    #     display_stats(selected_secid, selected_model)
+if action == "Акция":
+    selected_model = st.sidebar.selectbox("Модель:", options=models)
+    selected_secid = st.sidebar.selectbox("Акция:", options=secids)
+    display_prediction(selected_model, selected_secid)
+else:
+    durations = ['five_years', 'all']
+    selected_model = st.sidebar.selectbox("Модель:", options=models)
+    selected_duration = st.sidebar.selectbox("Продолжительность:", options=durations)
+    display_mean(selected_model, selected_duration)
