@@ -77,6 +77,9 @@ def display_prediction(model, secid):
     try:
         resp = requests.get(f'{FAST_API_URL}/predict/{model}/{secid}/', verify=verify)
         result = resp.json()
+        st.sidebar.write(f'Для акции {secid} лучшие модели с горизонтом и MAPE ошибками следующие.')
+        for data in result['best_models']:
+            st.sidebar.write(data)
         st.dataframe(result['data_frame'], use_container_width=True)
         for category, images in result['grouped_images'].items():
             st.subheader(category)
@@ -137,18 +140,37 @@ def display_mean(model, duration):
         st.error(f"Ошибка: {e}")
 
 
+def display_top_models(duration):
+    st.title("Топ моделей")
+    st.write(f"Выбранная продолжительность {duration}")
+    try:
+        resp = requests.get(f'{FAST_API_URL}/top_models/{duration}', verify=verify)
+        result = resp.json()
+        for image in result['top_models_images']:
+            s3_client.download_file(BUCKET, image, '/tmp/image')
+            day = image.split('_')[-1].split('.')[0]
+            st.subheader(f'Топ предсказаний на {day} день.')
+            st.image('/tmp/image', use_container_width=True)
+    except Exception as e:
+        st.error(f"Ошибка: {e}")
+
+
 st.sidebar.header("Выбор данных")
 secids = fetch_secids()
 models = fetch_models()
 
-action = st.sidebar.radio("Прогноз по:", ("Акция", "Среднее"))
+action = st.sidebar.radio("Прогноз по:", ("Акция", "Среднее", "Топ моделей"))
 
 if action == "Акция":
     selected_model = st.sidebar.selectbox("Модель:", options=models)
     selected_secid = st.sidebar.selectbox("Акция:", options=secids)
     display_prediction(selected_model, selected_secid)
-else:
+elif action == 'Среднее':
     durations = ['five_years', 'all']
     selected_model = st.sidebar.selectbox("Модель:", options=models)
     selected_duration = st.sidebar.selectbox("Продолжительность:", options=durations)
     display_mean(selected_model, selected_duration)
+else:
+    durations = ['five_years', 'all']
+    selected_duration = st.sidebar.selectbox("Продолжительность:", options=durations)
+    display_top_models(selected_duration)

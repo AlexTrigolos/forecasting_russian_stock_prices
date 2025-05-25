@@ -1,0 +1,438 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{secids}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=a50f5103bd5d368f104fa93ffe5f9124}{%
+           family={Fin-Plan},
+           familyi={F\bibinithyphendelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{fullhash}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{fullhashraw}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{bibnamehash}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{authorbibnamehash}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{authornamehash}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{authorfullhash}{a50f5103bd5d368f104fa93ffe5f9124}
+      \strng{authorfullhashraw}{a50f5103bd5d368f104fa93ffe5f9124}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Список акций Мосбиржи}
+      \verb{urlraw}
+      \verb https://fin-plan.org/stocks/rus
+      \endverb
+      \verb{url}
+      \verb https://fin-plan.org/stocks/rus
+      \endverb
+    \endentry
+    \entry{finam}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=392f20d41b4c3da98dc68d074f31b9b3}{%
+           family={Finam},
+           familyi={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{fullhash}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{fullhashraw}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{bibnamehash}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{authorbibnamehash}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{authornamehash}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{authorfullhash}{392f20d41b4c3da98dc68d074f31b9b3}
+      \strng{authorfullhashraw}{392f20d41b4c3da98dc68d074f31b9b3}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости Finam}
+      \verb{urlraw}
+      \verb https://www.finam.ru/
+      \endverb
+      \verb{url}
+      \verb https://www.finam.ru/
+      \endverb
+    \endentry
+    \entry{interfax}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=dc99dec7cdc95effb961390d3249c90e}{%
+           family={Interfax},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{fullhash}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{fullhashraw}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{bibnamehash}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{authorbibnamehash}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{authornamehash}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{authorfullhash}{dc99dec7cdc95effb961390d3249c90e}
+      \strng{authorfullhashraw}{dc99dec7cdc95effb961390d3249c90e}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Число физлиц с брокерскими счетами на МосБирже в 2024 году выросло на 5,4 млн}
+      \verb{urlraw}
+      \verb https://www.interfax.ru/business/1003027?ysclid=mau9sga6le282523374
+      \endverb
+      \verb{url}
+      \verb https://www.interfax.ru/business/1003027?ysclid=mau9sga6le282523374
+      \endverb
+    \endentry
+    \entry{investing}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=4f0521bc30af819c08aeb52be768c72f}{%
+           family={Investiong},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{fullhash}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{fullhashraw}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{bibnamehash}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{authorbibnamehash}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{authornamehash}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{authorfullhash}{4f0521bc30af819c08aeb52be768c72f}
+      \strng{authorfullhashraw}{4f0521bc30af819c08aeb52be768c72f}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости Investing.com}
+      \verb{urlraw}
+      \verb https://ru.investing.com/
+      \endverb
+      \verb{url}
+      \verb https://ru.investing.com/
+      \endverb
+    \endentry
+    \entry{brazilnews}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=e57d957dd4fbcc27b3dc524e6fc05ae3}{%
+           family={Jr},
+           familyi={J\bibinitperiod},
+           given={Juvenal\bibnamedelimb José\bibnamedelimb Duarte1\bibnamedelimb Sahudy\bibnamedelimb Montenegro\bibnamedelimb González1\bibnamedelimb José\bibnamedelimb César\bibnamedelima Cruz},
+           giveni={J\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim S\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim G\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim C\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{fullhash}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{fullhashraw}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{bibnamehash}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{authorbibnamehash}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{authornamehash}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{authorfullhash}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \strng{authorfullhashraw}{e57d957dd4fbcc27b3dc524e6fc05ae3}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Predicting Stock Price Falls Using News Data: Evidence from the Brazilian Market}
+      \verb{urlraw}
+      \verb https://www.sci-hub.ru/10.1007/s10614-020-10060-y?ysclid=mav835u6bv826669042
+      \endverb
+      \verb{url}
+      \verb https://www.sci-hub.ru/10.1007/s10614-020-10060-y?ysclid=mav835u6bv826669042
+      \endverb
+    \endentry
+    \entry{kaggle}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=8fec9765921cfa63cb331e42a924c27c}{%
+           family={Kaggle},
+           familyi={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{fullhash}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{fullhashraw}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{bibnamehash}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{authorbibnamehash}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{authornamehash}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{authorfullhash}{8fec9765921cfa63cb331e42a924c27c}
+      \strng{authorfullhashraw}{8fec9765921cfa63cb331e42a924c27c}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Kaggle}
+      \verb{urlraw}
+      \verb https://www.kaggle.com/
+      \endverb
+      \verb{url}
+      \verb https://www.kaggle.com/
+      \endverb
+    \endentry
+    \entry{moex}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=8ec9dda986d62aca23c6dc4e903d22c7}{%
+           family={MOEX},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{fullhash}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{fullhashraw}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{bibnamehash}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{authorbibnamehash}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{authornamehash}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{authorfullhash}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \strng{authorfullhashraw}{8ec9dda986d62aca23c6dc4e903d22c7}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости Московской биржи}
+      \verb{urlraw}
+      \verb https://www.moex.com/ru/news/
+      \endverb
+      \verb{url}
+      \verb https://www.moex.com/ru/news/
+      \endverb
+    \endentry
+    \entry{sambanova}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=00d332ae2f56917677a12065c9590b76}{%
+           family={SambaNova},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{00d332ae2f56917677a12065c9590b76}
+      \strng{fullhash}{00d332ae2f56917677a12065c9590b76}
+      \strng{fullhashraw}{00d332ae2f56917677a12065c9590b76}
+      \strng{bibnamehash}{00d332ae2f56917677a12065c9590b76}
+      \strng{authorbibnamehash}{00d332ae2f56917677a12065c9590b76}
+      \strng{authornamehash}{00d332ae2f56917677a12065c9590b76}
+      \strng{authorfullhash}{00d332ae2f56917677a12065c9590b76}
+      \strng{authorfullhashraw}{00d332ae2f56917677a12065c9590b76}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{LLM для оценки новостей}
+      \verb{urlraw}
+      \verb https://cloud.sambanova.ai/dashboard
+      \endverb
+      \verb{url}
+      \verb https://cloud.sambanova.ai/dashboard
+      \endverb
+    \endentry
+    \entry{smartlab}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=64df1399d088fb5ffbb487c4993490ec}{%
+           family={SMART-LAB},
+           familyi={S\bibinithyphendelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{fullhash}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{fullhashraw}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{bibnamehash}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{authorbibnamehash}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{authornamehash}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{authorfullhash}{64df1399d088fb5ffbb487c4993490ec}
+      \strng{authorfullhashraw}{64df1399d088fb5ffbb487c4993490ec}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости SMART-LAB}
+      \verb{urlraw}
+      \verb https://smart-lab.ru/news/
+      \endverb
+      \verb{url}
+      \verb https://smart-lab.ru/news/
+      \endverb
+    \endentry
+    \entry{bcs}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=7c3c270717779bf111d4e355ba81c70b}{%
+           family={БКС},
+           familyi={Б\bibinitperiod}}}%
+      }
+      \strng{namehash}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{fullhash}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{fullhashraw}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{bibnamehash}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{authorbibnamehash}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{authornamehash}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{authorfullhash}{7c3c270717779bf111d4e355ba81c70b}
+      \strng{authorfullhashraw}{7c3c270717779bf111d4e355ba81c70b}
+      \field{sortinit}{Б}
+      \field{sortinithash}{5261f8dfa92113358b76bb09b8629977}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости БКС}
+      \verb{urlraw}
+      \verb https://bcs-express.ru/category
+      \endverb
+      \verb{url}
+      \verb https://bcs-express.ru/category
+      \endverb
+    \endentry
+    \entry{modernml}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=26e45adebbeefb293bc7405e58e43ba3}{%
+           family={В.В.},
+           familyi={В\bibinitperiod},
+           given={Шамраева},
+           giveni={Ш\bibinitperiod}}}%
+      }
+      \strng{namehash}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{fullhash}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{fullhashraw}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{bibnamehash}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{authorbibnamehash}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{authornamehash}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{authorfullhash}{26e45adebbeefb293bc7405e58e43ba3}
+      \strng{authorfullhashraw}{26e45adebbeefb293bc7405e58e43ba3}
+      \field{sortinit}{В}
+      \field{sortinithash}{769561dacf0468c568f33adb4926797c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{МАТЕМАТИЧЕСКИЕ МЕТОДЫ ПРОГНОЗИРОВАНИЯ ИЗМЕНЕНИЯ ЦЕНЫ АКЦИЙ И ИХ РЕАЛИЗАЦИЯ МЕТОДАМИ МАШИННОГО ОБУЧЕНИЯ}
+      \verb{urlraw}
+      \verb https://s.fundamental-research.ru/pdf/2024/11/43718.pdf
+      \endverb
+      \verb{url}
+      \verb https://s.fundamental-research.ru/pdf/2024/11/43718.pdf
+      \endverb
+    \endentry
+    \entry{linreg}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=c46f1c4a4eb5579b616759317dc27547}{%
+           family={П.Г.},
+           familyi={П\bibinitperiod},
+           given={Рудзейт\bibnamedelimb О.Ю.\bibnamedelimi Зайнетдинов\bibnamedelimb А.Р.\bibnamedelimi Недяк\bibnamedelimb А.В.\bibnamedelimi Рагулин},
+           giveni={Р\bibinitperiod\bibinitdelim О\bibinitperiod\bibinitdelim З\bibinitperiod\bibinitdelim А\bibinitperiod\bibinitdelim Н\bibinitperiod\bibinitdelim А\bibinitperiod\bibinitdelim Р\bibinitperiod}}}%
+      }
+      \strng{namehash}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{fullhash}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{fullhashraw}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{bibnamehash}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{authorbibnamehash}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{authornamehash}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{authorfullhash}{c46f1c4a4eb5579b616759317dc27547}
+      \strng{authorfullhashraw}{c46f1c4a4eb5579b616759317dc27547}
+      \field{sortinit}{П}
+      \field{sortinithash}{b60c3989b0a91e15e157f5b4997c35c7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Прогнозирование цены акции с помощью метода регрессионного анализа}
+      \verb{urlraw}
+      \verb https://resources.today/PDF/14INOR420.pdf?ysclid=matxapmoky444560454
+      \endverb
+      \verb{url}
+      \verb https://resources.today/PDF/14INOR420.pdf?ysclid=matxapmoky444560454
+      \endverb
+    \endentry
+    \entry{rbc}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=e8aaeb3489adbea1b639aa6778a23892}{%
+           family={РБК},
+           familyi={Р\bibinitperiod}}}%
+      }
+      \strng{namehash}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{fullhash}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{fullhashraw}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{bibnamehash}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{authorbibnamehash}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{authornamehash}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{authorfullhash}{e8aaeb3489adbea1b639aa6778a23892}
+      \strng{authorfullhashraw}{e8aaeb3489adbea1b639aa6778a23892}
+      \field{sortinit}{Р}
+      \field{sortinithash}{72653a62bb3cb54ced08865870aff9d6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости РБК}
+      \verb{urlraw}
+      \verb https://www.rbc.ru/
+      \endverb
+      \verb{url}
+      \verb https://www.rbc.ru/
+      \endverb
+    \endentry
+    \entry{ria}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=a2a5542509660624e692883b45e5f5f5}{%
+           family={РИА},
+           familyi={Р\bibinitperiod}}}%
+      }
+      \strng{namehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{fullhash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{fullhashraw}{a2a5542509660624e692883b45e5f5f5}
+      \strng{bibnamehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authorbibnamehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authornamehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authorfullhash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authorfullhashraw}{a2a5542509660624e692883b45e5f5f5}
+      \field{extraname}{1}
+      \field{sortinit}{Р}
+      \field{sortinithash}{72653a62bb3cb54ced08865870aff9d6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Новости РИА}
+      \verb{urlraw}
+      \verb https://ria.ru/
+      \endverb
+      \verb{url}
+      \verb https://ria.ru/
+      \endverb
+    \endentry
+    \entry{rialinks}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=a2a5542509660624e692883b45e5f5f5}{%
+           family={РИА},
+           familyi={Р\bibinitperiod}}}%
+      }
+      \strng{namehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{fullhash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{fullhashraw}{a2a5542509660624e692883b45e5f5f5}
+      \strng{bibnamehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authorbibnamehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authornamehash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authorfullhash}{a2a5542509660624e692883b45e5f5f5}
+      \strng{authorfullhashraw}{a2a5542509660624e692883b45e5f5f5}
+      \field{extraname}{2}
+      \field{sortinit}{Р}
+      \field{sortinithash}{72653a62bb3cb54ced08865870aff9d6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{addendum}{(дата обращения: 18.05.2025)}
+      \field{title}{Ссылки на новости}
+      \verb{urlraw}
+      \verb https://ria.ru/20250518/
+      \endverb
+      \verb{url}
+      \verb https://ria.ru/20250518/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

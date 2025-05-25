@@ -100,6 +100,16 @@ def download_models_data_from_s3(secid, model_name):
         logger.info(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
 
 
+def get_best_models(secid):
+    key = f'predictions/{secid}/best_models.pkl'
+    response = s3_client.get_object(Bucket=BUCKET, Key=key)
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        logger.info(f"Успешное получение в {BUCKET}/{key}")
+        return pickle.loads(response['Body'].read())
+    else:
+        logger.info(f"Ошибка при получение: {response['ResponseMetadata']['HTTPStatusCode']}")
+
+
 def download_mean_models_data_from_s3(model_name, duration):
     mape = None
     rmse = None
@@ -154,6 +164,15 @@ def get_mean_images(model, duration):
     return grouped_images
 
 
+DAYS = [1, 5, 10, 21, 62, 124, 247]
+
+def get_top_models_images(duration):
+    grouped_images = list()
+    for day in DAYS:
+        grouped_images.append(f'predictions/images/{duration}mean_top_models_{day}.png')
+    return grouped_images
+
+
 def list_directories(s3_client):
     directories = set()
     try:
@@ -202,17 +221,22 @@ async def predict(model: str, secid: str):
     data_frame = pd.DataFrame({'День': list(range(1, len(predictions) + 1)), 'Прогноз': predictions, 'RMSE': rmse, 'MAPE': mape })
     data_frame.set_index('День', inplace=True)
     grouped_images = get_images(secid, model)
-    logger.info(grouped_images)
+    best_models = get_best_models(secid)
+    best_models_text = list()
+    logger.info(best_models)
+    for index in range(len(best_models)):
+        best_models_text.append(f'День {DAYS[index]}: {best_models[index][0]} - {round(best_models[index][1], 3)}')
     return {
         "data_frame": data_frame,
-        "grouped_images": grouped_images
+        "grouped_images": grouped_images,
+        "best_models": best_models_text
     }
 
 
 @app.get("/predict_mean/{model}/{duration}")
 async def predict_mean(model: str, duration: str):
     """
-    Получение обучаемых данных, предиктов и реальных значений
+    Получение средних результатов для кажодой из модели.
     """
     # if model not in MODELS:
     #     raise HTTPException(status_code=400, detail="Invalid model")
@@ -221,13 +245,30 @@ async def predict_mean(model: str, duration: str):
     else:
         duration = 'five_years_'
     mape, rmse = download_mean_models_data_from_s3(model, duration)
+    rmse = [value if value != float('inf') and value != float('-inf') else 9e200 for value in rmse]
     mean_data_frame = pd.DataFrame({'День': list(range(1, len(mape) + 1)), 'RMSE': rmse, 'MAPE': mape })
     mean_data_frame.set_index('День', inplace=True)
     grouped_mean_images = get_mean_images(model, duration)
-    logger.info(grouped_mean_images)
     return {
         "mean_data_frame": mean_data_frame,
         "grouped_mean_images": grouped_mean_images
+    }
+
+
+@app.get("/top_models/{duration}")
+async def top_models(duration: str):
+    """
+    Получение лучших моделей на различные горизонты дней.
+    """
+    # if model not in MODELS:
+    #     raise HTTPException(status_code=400, detail="Invalid model")
+    if duration == 'all':
+        duration = ''
+    else:
+        duration = 'five_years_'
+    top_models_images = get_top_models_images(duration)
+    return {
+        "top_models_images": top_models_images
     }
 
 
